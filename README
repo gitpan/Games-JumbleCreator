@@ -14,9 +14,21 @@ SYNOPSIS
       print "$word\n";
    }
 
+   my @good_words = $jumble->solve('rta');
+
+   if (@good_words) {
+      foreach my $good_word (@good_words) {
+         print "$good_word\n";
+      }
+   } else {
+      print "No words found\n";
+   }
+
+
 DESCRIPTION
 
 Creates words (normal and jumbled) for jumble word game. 
+Solve jumbled words.
 
 Default number of words is 5.
 Default dictionary is '/usr/dict/words'.

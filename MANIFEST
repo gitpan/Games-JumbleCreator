@@ -5,4 +5,5 @@ MANIFEST
 README
 test.pl
 TODO
-examples/jumble.pl
+examples/jumble_create.pl
+examples/jumble_solve.pl

@@ -4,3 +4,6 @@ Revision history for Perl extension Games::JumbleCreator.
 	- original version; created by h2xs 1.21 with options
 		-X -A -n Games::JumbleCreator
 
+0.02  Fri Mar 29 15:05:34 2002
+        - Added word solve method
+

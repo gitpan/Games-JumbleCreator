@@ -8,7 +8,7 @@ use strict;
 use Carp;
 use vars qw($VERSION);
 
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 sub new {
     my $proto = shift;
@@ -56,7 +56,7 @@ sub create {
         # Sort letters so we can check for unique "unjumble"
         my @temp_array = split(//, $word);
         @temp_array = sort(@temp_array);
-        my $key = join(" ", @temp_array);
+        my $key = join('', @temp_array); #TEST
 
         push @{$five_letter_words{$key}}, $_ if length $_ == 5;
         push @{$six_letter_words{$key}}, $_  if length $_ == 6;
@@ -110,7 +110,7 @@ sub create {
             next if $i == $j;
             @$array[$i,$j] = @$array[$j,$i];
         }
-        my $scrambled_word = join("", @temp_array);
+        my $scrambled_word = join('', @temp_array);
         push @jumble_out, "$scrambled_word ($word)";
     }
 
@@ -119,6 +119,43 @@ sub create {
 
 }
 
+sub solve {
+
+    my($self) = shift;
+    my @good_words;
+   
+    if(@_) { 
+        $self->{word} = shift;
+    } else {
+        croak "No word to solve\n";
+    }
+
+    my @temp_array = split(//, $self->{word});
+    @temp_array = sort(@temp_array);
+    $self->{key} = join('', @temp_array);
+
+    # Read dictionary and get five- and six-letter words
+    open FH, $self->{dict} or croak "Cannot open $self->{dict}: $!";
+    while(<FH>) {
+        chomp;
+        my $word = lc $_;             # Lower case all words
+        next if $word !~ /^[a-z]+$/;  # Letters only
+        next if length($word) ne length($self->{word});
+
+        # Sort letters so we can check for unique "unjumble"
+        my @temp_array = split(//, $word);
+        @temp_array = sort(@temp_array);
+        my $key = join('', @temp_array);
+
+        if ($self->{key} eq $key) {
+            push @good_words, $word;
+        }
+       
+    }
+    close FH;
+
+    return @good_words;
+}
 
 1;
 
@@ -142,9 +179,20 @@ Games::JumbleCreator - Create Jumble word puzzles.
     print "$word\n";
   }
 
+  my @good_words = $jumble->solve('rta');
+
+  if (@good_words) {
+    foreach my $good_word (@good_words) {
+      print "$good_word\n";
+    }
+  } else {
+    print "No words found\n";
+  }
+
 =head1 DESCRIPTION
 
 C<Games::JumbleCreator> is used to create Jumble word puzzles.
+C<Games::JumbleCreator> can also solve jumbled words.
 
 =head1 OVERVIEW
 
@@ -177,7 +225,8 @@ The number of words is returned.
 
 =item dict ( [ PATH_TO_DICT ] )
 
-If C<PATH_TO_DICT> is passed, this method will set the path to the dictionary file.
+If C<PATH_TO_DICT> is passed, this method will set the path to 
+the dictionary file. Dictionary file must have one word per line.
 The default value is /usr/dict/words. 
 The path to the dictionary file is returned. 
 
@@ -185,6 +234,11 @@ The path to the dictionary file is returned.
 
 Method that creates the jumble.
 Returns array containing words (normal and jumbled).
+
+=item solve ( WORD )
+
+This method will solve a jumbled word.
+Returns array containing valid words.
 
 =back
 
