@@ -1,0 +1,9 @@
+TODO
+
+ - Improve documentation.
+ - Add functionality so that there is a master clue
+   and each jumbled word will contain one or more letters
+   that will make up the master clue.
+ - Allow user to select number of letters per word.
+ - Allow user to select number of master clue letters per word.
+ - Add cgi script to examples.
